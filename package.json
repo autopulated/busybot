@@ -1,6 +1,6 @@
 {
   "name": "busybot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Impose non-parallelisable proof of work to slow down pesky bots.",
   "type": "module",
   "license": "Apache-2.0",
@@ -36,8 +36,7 @@
       "test"
     ]
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@eslint/js": "^9.34.0",
     "eslint": "^9.34.0",
