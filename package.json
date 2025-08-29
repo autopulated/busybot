@@ -37,8 +37,6 @@
     ]
   },
   "dependencies": {
-    "bigint-mod-arith": "^3.3.1",
-    "modular-power": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
