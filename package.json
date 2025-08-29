@@ -1,0 +1,48 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "Impose non-parallelisable proof of work to slow down pesky bots.",
+  "type": "module",
+  "license": "ISC",
+  "files": [
+    "index.mjs"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "pow",
+    "proof-of-work",
+    "kctf",
+    "non-parallel",
+    "rate-limit",
+    "ratelimit",
+    "modular exponentiation",
+    "modular square root"
+  ],
+  "module": "index.mjs",
+  "scripts": {
+    "test": "tap run",
+    "lint": "./node_modules/.bin/eslint -c eslint.config.mjs './{,!(node_modules)/**/}*.js' './{,!(node_modules)/**/}*.mjs'"
+  },
+  "tap": {
+    "show-full-coverage": true,
+    "allow-incomplete-coverage": true,
+    "coverage-report": [
+      "text",
+      "lcovonly"
+    ],
+    "files": [
+      "test"
+    ]
+  },
+  "dependencies": {
+    "bigint-mod-arith": "^3.3.1",
+    "modular-power": "^2.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "eslint": "^9.34.0",
+    "tap": "^21.1.0"
+  }
+}
