@@ -1,9 +1,9 @@
 {
-  "name": "y",
+  "name": "busybot",
   "version": "1.0.0",
   "description": "Impose non-parallelisable proof of work to slow down pesky bots.",
   "type": "module",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "files": [
     "index.mjs"
   ],
@@ -23,7 +23,7 @@
   "module": "index.mjs",
   "scripts": {
     "test": "tap run",
-    "lint": "./node_modules/.bin/eslint -c eslint.config.mjs './{,!(node_modules)/**/}*.js' './{,!(node_modules)/**/}*.mjs'"
+    "lint": "eslint -c eslint.config.mjs './{,!(node_modules)/**/}*.mjs'"
   },
   "tap": {
     "show-full-coverage": true,
