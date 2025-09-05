@@ -218,7 +218,7 @@ let randomBytesP;
 async function generate({forMersenneExponent = 1279, withDifficulty}){
     // challenge generation is only supported in a node environment
     if (!randomBytesP) {
-        randomBytesP = (await import('node:util')).promisify((await import('node:crypto')).randomBytes);
+        randomBytesP = (await import(/* webpackIgnore: true */ 'node:util')).promisify((await import(/* webpackIgnore: true */ 'node:crypto')).randomBytes);
     }
 
     if (!isMersenneExponent(forMersenneExponent)) {
