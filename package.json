@@ -21,6 +21,7 @@
     "modular square root"
   ],
   "module": "index.mjs",
+  "main": "index.mjs",
   "scripts": {
     "test": "tap run",
     "lint": "eslint -c eslint.config.mjs './{,!(node_modules)/**/}*.mjs'"
