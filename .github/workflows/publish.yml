@@ -41,11 +41,11 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v5
-      # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v5
         with:
           node-version: '24'
           registry-url: 'https://npm.pkg.github.com'
+          scope: '@autopulated'
       - run: npm ci
       - run: echo $NPM_CONFIG_USERCONFIG && cat $NPM_CONFIG_USERCONFIG
       - run: npm publish
