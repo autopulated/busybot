@@ -47,7 +47,6 @@ app.get('/get/a/challenge', async function(req, res) {
 
 // an endpoint protected by the challenge
 app.post('/your/expensive/endpoint', function(req, res, next) {
-    console.log('soln:', req.body.solution, 'session challenge:', req.session.challenge);
     if ((!req.session.challenge) || !verify(req.session.challenge, req.body.solution)) {
         res.status(401);
         res.send('you must solve the challenge to call this endpoint');
