@@ -1,6 +1,6 @@
 {
   "name": "busybot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Impose non-parallelisable proof of work to slow down pesky bots.",
   "type": "module",
   "license": "Apache-2.0",
