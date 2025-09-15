@@ -16,9 +16,9 @@ bots, by imposing a real cost on the bots prior to making the requests.
 The challenge cannot be parallelised, or solved dramatically faster on a GPU or
 specialist hardware than on a normal CPU.
 
-It is serially compute bound (not memory intensive), and busybot optimised
-implementations of to both solve and verify challenges in pure JS with no
-dependencies.
+It is serially compute bound (not memory intensive), and busybot includes
+optimised implementations of to both solve and verify challenges in pure JS
+with no dependencies.
 
 ## Usage:
 ```npm install --save busybot```
@@ -84,7 +84,7 @@ const expensiveResult = await fetch('/your/expensive/endpoint',
 ```
 
 ## Background
-Busyboy is an implementation of a more general version of the proof of work
+Busybot is an implementation of a more general version of the proof of work
 scheme used by kCTF
 (https://github.com/google/kctf/blob/v1/docker-images/challenge/pow.py), to
 impose expensive work on pesky bots before serving their requests.
@@ -128,14 +128,15 @@ very cheap, consisting only of a few adds and shifts.
 
 
 ## Why this Proof-of-Work Scheme is Useful
-This proof of work scheme is useful over a hash-collision type scheme
-because it is resistant to parallel implantation, not memory intensive, and
-predictable in duration largely varying only by single core processing
-speed, and the speed of the closest few KB of cache.
+This proof of work scheme is useful over a hash-collision type scheme, or
+memory-bound scheme because it is resistant to parallel implantation, not
+memory intensive, and predictable in duration largely varying only by single
+core processing speed, and the speed of the closest few KB of cache. This makes
+it 'fairer' for a wide range of devices.
 
 A client with significant parallel GPU compute cannot calculate a solution
 dramatically faster or cheaper than a client with a single core processor.
-(And these reasons appear to be why it was chosen for kCTF
+(And these reasons appear to be why it was chosen for kCTF too
 https://github.com/google/kctf/commit/b770fad71304cb060475c98bcabd2e150d217ad0)
 
 This scheme does of course cause all clients to 'waste' time and energy,

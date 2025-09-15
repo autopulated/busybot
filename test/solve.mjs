@@ -45,3 +45,29 @@ t.test('sovles test vectors', t => {
     }
 
 });
+
+t.test('provides progress indication', t => {
+    t.plan(3);
+
+    const {challenge, solution} = vectors[0];
+    let progress = [];
+    const solved = solve(challenge, {progressCallback: (p) => {
+        progress.push(p);
+    }});
+    t.ok(progress.length > 0, 'expected progress callback');
+    let sorted = true;
+    let last = progress[0];
+    for (const p of progress) {
+        if (p < last) sorted = false;
+        last = p;
+    }
+    t.ok(sorted, 'expected monotonic progress');
+    t.match(solved, solution, 'expected correct solution');
+
+});
+
+t.test('invalid progress callback', t => {
+    t.throws(() => solve(vectors[0].challenge, {progressCallback:{}}), {message:'progressCallback must be a function'}, 'should throw with invalid progress callback');
+
+    t.end();
+});

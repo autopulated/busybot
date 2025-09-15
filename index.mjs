@@ -224,9 +224,18 @@ async function generate({forMersenneExponent = 1279, withDifficulty}){
     if (!isMersenneExponent(forMersenneExponent)) {
         throw new Error(`"${forMersenneExponent}" is not known to be a Mersenne exponent, expected one of: ${Known_Mersenne_Exponents}`);
     }
+    if (forMersenneExponent < 61) {
+        throw new Error(`"${forMersenneExponent}" is too small of a base to produce a secure challenge.`);
+    }
+
+    if ((!Number.isSafeInteger(withDifficulty)) || withDifficulty < 0) {
+        throw new Error('Difficulty must be a positive integer.');
+    }
+
+    const challengeByteLength = (forMersenneExponent < 128)? Math.floor(forMersenneExponent/8) : 16;
 
     return {
-        c: `0x${(await randomBytesP(16)).toString('hex')}`,
+        c: `0x${(await randomBytesP(challengeByteLength)).toString('hex')}`,
         d: withDifficulty,
         m: forMersenneExponent
     };
@@ -244,13 +253,16 @@ async function generate({forMersenneExponent = 1279, withDifficulty}){
 //   s: '0xfe173.....' (hex-encoded BigInt, challenge value after d modular square roots, followed by bit flips)
 // }
 // Throws if challenge is invalid.
-function solve(challenge) {
+function solve(challenge, {progressCallback}={}) {
     if ((!challenge) ||
         (typeof challenge) !== 'object' ||
         (typeof challenge.c) !== 'string' ||
         (typeof challenge.d) !== 'number' ||
         (typeof challenge.m) !== 'number') {
         throw new Error('Malformed challenge: must have .c, .m, and .d');
+    }
+    if (progressCallback && (typeof progressCallback) !== 'function') {
+        throw new Error('progressCallback must be a function');
     }
     let solution = BigInt(challenge.c);
     const difficulty = challenge.d;
@@ -260,6 +272,9 @@ function solve(challenge) {
     for (let i = 0; i < difficulty; i++) {
         solution = fastFixedExpPow(solution);
         solution ^= Flip_Bits;
+        if (progressCallback){
+            progressCallback((i+1) / difficulty);
+        }
     }
     return {s: `0x${solution.toString(16)}`};
 }
