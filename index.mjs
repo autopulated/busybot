@@ -267,7 +267,10 @@ function solve(challenge, {progressCallback}={}) {
     let solution = BigInt(challenge.c);
     const difficulty = challenge.d;
     const forMersenneExponent = challenge.m;
-    const { fastFixedExpPow } = initMathsFunctions({ forMersenneExponent });
+    const { fastFixedExpPow, modulus } = initMathsFunctions({ forMersenneExponent });
+    if (solution > modulus) {
+        throw new Error('Malformed challenge: too large for exponent.');
+    }
 
     for (let i = 0; i < difficulty; i++) {
         solution = fastFixedExpPow(solution);

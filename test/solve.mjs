@@ -8,6 +8,7 @@ t.test('invalid challenge', t => {
     t.throws(() => solve({c:123, d:123, m:123}), {message:'Malformed challenge: must have .c, .m, and .d'}, 'should reject with invalid challenge');
     t.throws(() => solve({c:'0x123', d:'foo', m:123}), {message:'Malformed challenge: must have .c, .m, and .d'}, 'should reject with invalid challenge');
     t.throws(() => solve({c:'0x123', d:123, m:'foo'}), {message:'Malformed challenge: must have .c, .m, and .d'}, 'should reject with invalid challenge');
+    t.throws(() => solve({c:'0x112345678', d:123, m:31}), {message:'Malformed challenge: too large for exponent.'}, 'should reject with invalid challenge');
 
     t.end();
 });
