@@ -46,6 +46,7 @@ jobs:
           node-version: '24'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@autopulated'
+      - run: sed -i 's/"name": "busybot"/"name": "@autopulated\/busybot"/g' package*.json
       - run: npm ci
       - run: echo $NPM_CONFIG_USERCONFIG && cat $NPM_CONFIG_USERCONFIG
       - run: npm publish
