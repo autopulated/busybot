@@ -41,7 +41,7 @@ app.get('/get/a/challenge', async function(req, res) {
     const challenge = await generate({forMersenneExponent:4253, withDifficulty: 100});
     req.session.challenge = challenge;
 
-    // the challenge is a plain javascript object that is json-serialisable:
+    // the challenge is a plain object that is json-serialisable:
     res.send(challenge);
 });
 
@@ -82,6 +82,65 @@ const expensiveResult = await fetch('/your/expensive/endpoint',
     }
 );
 ```
+
+## API
+
+### `async busybot.generate({forMersenneExponent = 1279, withDifficulty})`
+Generate a challenge (returned as a promise to a plain object that can be
+safely JSON-serialised). Throws for invalid arguments.
+
+Note that this returns a promise because it may be necessary for the system
+crypto api to wait until it has enough entropy to generate a secure random
+value.
+
+`withDifficulty` is a number that linearly scales the difficulty of the
+challenge. 
+
+`forMersenneExponent` should be the exponent of a Mersenne prime, that scales
+the difficultly of the challenge much more dramatically. Sensible values are:
+ * `61, 89, 107, 127, 521, 607`: **very easy challenges** taking milliseconds at difficulty 100
+ * `1279, 2203, 2281, 3217, 4253, 4423`: **normal** challenges taking seconds at difficulty 100
+ * `9689, 9941, 11213, 19937, 21701, 23209`: **very difficult** challenges taking 10s to minutes at difficultly 100
+
+Examples:
+```js
+import {generate} from 'busybot';
+// using the default exponent of 1279:
+const challenge1 = await generate({withDifficulty:100});
+
+// challenge 2 is 10 times more difficult than challenge 1:
+const challenge2 = await generate({withDifficulty:1000});
+
+// challenge 3 is very difficult (approx 200x more) because it 
+// uses a large exponent, despite the same difficulty.
+const challenge3 = await generate({
+    forMersenneExponent: 11213,
+    withDifficulty: 100
+});
+```
+
+### `busybot.solve(challenge, {progressCallback})`
+Solve a challenge (as returned from `.generate()`. The solution is returned as
+a plain object that can be safely JSON-serialised. Throws for invalid
+challenges (but it is possible to construct a valid challenge that will not
+complete in a reasonable amount of time, and no attempt is made to protect
+against this).
+
+If provided, `progressCallback` is called after each iteration with the current completion (from 0 to 1):
+
+```js
+const solution = solve(challenge, {
+    progressCallback: (p) => console.log(`${p*100}% complete.`)
+});
+```
+
+Note that solve is synchronous, and will block until the challenge is completed.
+
+
+### `busybot.verify(challenge, solution)`
+Verify a solution (as returned from `.solve()`). Returns `true` for correct
+solutions, `false` for incorrect, and throws for malformed arguments.
+
 
 ## Background
 Busybot is an implementation of a more general version of the proof of work
@@ -128,24 +187,35 @@ very cheap, consisting only of a few adds and shifts.
 
 
 ## Why this Proof-of-Work Scheme is Useful
-This proof of work scheme is useful over a hash-collision type scheme, or
-memory-bound scheme because it is resistant to parallel implantation, not
-memory intensive, and predictable in duration largely varying only by single
-core processing speed, and the speed of the closest few KB of cache. This makes
-it 'fairer' for a wide range of devices.
+This proof of work scheme is useful over a hash-collision type scheme, random
+search scheme, or memory-bound scheme:
+ * It is resistant to parallel implementation, so a multi-core server or GPU
+   cannot solve it dramatically faster than a mobile device.
+ * It only requires a small amount of memory, which is also fairer to mobile
+   devices and means it does not degrade performance after the challenge has
+   finished by evicting other resources from memory.
+ * Since almost all modern devices have at least two cores, the impact of the
+   challenge on the responsiveness of a webpage when implemented in a web
+   worker is minimal.
 
-A client with significant parallel GPU compute cannot calculate a solution
-dramatically faster or cheaper than a client with a single core processor.
-(And these reasons appear to be why it was chosen for kCTF too
+It's especially important that a client with significant parallel GPU compute
+cannot calculate a solution dramatically faster or cheaper than a client with a
+single core processor.  (And this is appears to be why a challenge of this form
+was chosen for kCTF too
 https://github.com/google/kctf/commit/b770fad71304cb060475c98bcabd2e150d217ad0)
 
-This scheme does of course cause all clients to 'waste' time and energy,
-it's suggested to impose it only on a high rate of requests from a single ip
-address, where it can avoid otherwise denying service to genuine users who
-are sharing a connection: a group of 100 students in a school sharing the
-same ip address are not significantly hampered by each having to wait 10
-seconds for an important request, but a single abusive client making 100
-requests would have to spend 15 minutes of computing time for the privilege.
+The proof-of-work does of course cause all clients to 'waste' time and energy.
+
+It's best to impose difficult challenges only if some other signal indicates
+that the requests might be abusive, such as a high rate of requests from an ip,
+or another reputation metric, as an alternative to blocking requests
+completely.
+
+A group of 100 students in a school sharing the same ip address are not
+significantly hampered by each having to wait 10 seconds to solve a busybot
+challenge for an important request, but a single abusive client making 100
+requests from the same IP address would have to spend 15 minutes of computing
+time for the privilege.
 
 
 # License
