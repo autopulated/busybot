@@ -5,7 +5,7 @@
   "type": "module",
   "license": "Apache-2.0",
   "files": [
-    "index.mjs"
+    "index.mjs", "index.d.ts"
   ],
   "directories": {
     "test": "test"
@@ -26,6 +26,7 @@
   ],
   "module": "index.mjs",
   "main": "index.mjs",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/autopulated/busybot.git"
@@ -47,8 +48,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
-    "eslint": "^9.34.0",
-    "tap": "^21.1.0"
+    "eslint": "^9.39.3",
+    "tap": "^21.6.2"
   },
   "bugs": {
     "url": "https://github.com/autopulated/busybot/issues"
