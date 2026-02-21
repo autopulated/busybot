@@ -1,11 +1,12 @@
 {
   "name": "busybot",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Impose non-parallelisable proof of work to slow down pesky bots.",
   "type": "module",
   "license": "Apache-2.0",
   "files": [
-    "index.mjs", "index.d.ts"
+    "index.mjs",
+    "index.d.ts"
   ],
   "directories": {
     "test": "test"
